@@ -209,7 +209,7 @@ def train(train_loader, model, criterion, optimizer, epoch,odecay):
 
     end = time.time()
     for i, (input, target) in enumerate(train_loader):
-        target = target.cuda(async=True)
+        target = target.cuda()
         input = input.cuda()
         input_var = torch.autograd.Variable(input)
         target_var = torch.autograd.Variable(target)
@@ -252,7 +252,7 @@ def validate(val_loader, model, criterion, epoch):
     model.eval()
     end = time.time()
     for i, (input, target) in enumerate(val_loader):
-        target = target.cuda(async=True)
+        target = target.cuda()
         input = input.cuda()
         #print ( input.shape)
         with torch.no_grad():
@@ -283,6 +283,8 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
     filename = directory + filename
     torch.save(state, filename)
     if is_best:
+        if not os.path.exists('runs/%s/'%(args.name)):
+            os.makedirs('runs/%s/'%(args.name))
         shutil.copyfile(filename, 'runs/%s/'%(args.name) + 'model_best.pth.tar')
 
 class AverageMeter(object):
